@@ -1,16 +1,15 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
 
-from objetos.parede import *
-from objetos.solo import *
-from objetos.porta import *
+import pygame
+from config import Config
+from objetos.objetos import *
 from objetos.personagem import *
-from objetos.imp import *
 
 
-class Nivel(pygame.sprite.Sprite):
+class Nivel():
     def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
+        #pygame.sprite.Sprite.__init__(self)
 
         self.config = Config()
         self.sprite_ambiente = pygame.sprite.Group()
@@ -25,6 +24,7 @@ class Nivel(pygame.sprite.Sprite):
 
     def nivel_1(self):
         i = 0
+
         while i <= self.config.chao:
             parede = Parede()
             parede.rect.x = 0

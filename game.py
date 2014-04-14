@@ -3,10 +3,9 @@
 
 import pygame
 from pygame.locals import *
-import os, sys
-from home import *
-from config import *
-from nivel import *
+from home import Home
+from config import Config
+from nivel import Nivel
 
 
 class Game:

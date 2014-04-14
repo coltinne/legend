@@ -2,9 +2,8 @@
 #-*- coding: utf-8 -*-
 
 import pygame
-import legend
-from legend.spritesheet import *
-from legend.config import *
+from sprites.spritesheet import SpriteSheet
+from legend.config import Config
 
 
 class Personagem(pygame.sprite.Sprite):
@@ -26,34 +25,32 @@ class Personagem(pygame.sprite.Sprite):
     #__init__
 
     def update(self):
-        if self.rect.y > 530:
+        if False:
             pass
         else:
             self.rect.y += 5
     #update
 
     def mover_esquerda(self):
-        if self.rect.x <= 0:
-            pass
-        else:
-            self.rect.x -= 10
-        #else
+        self.rect.x -= 10
     #mover_esquerda
 
     def mover_direita(self):
-        if self.rect.x > self.config.tela[0] - 16:
-            pass
-        else:
-            self.rect.x += 10
-        #else
+        self.rect.x += 10
     #mover_esquerda
 
     def mover_pular(self):
-        for i in range(0, 65):
-            pygame.time.wait(1)
-            self.rect.y -= 1
+        self.rect.y -= 1
     #mover_pular
 
     def mover_baixo(self):
         self.rect.y += 10
+    #mover_baixo
 #Personagem
+
+
+class Imp(Personagem):
+    def __init__(self):
+        Personagem.__init__(self, "imp.png")
+    #__init__
+#Imp

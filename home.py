@@ -3,15 +3,14 @@
 
 import pygame
 from pygame.locals import *
-import os, sys
-from config import *
-from game import *
+from config import Config
+#from game import Game
 
 
 class Home:
     def __init__(self):
         try:
-            reload(game)
+            reload(Game)
         except Exception:
             from game import *
         #except
