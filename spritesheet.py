@@ -42,3 +42,4 @@ class SpriteSheet():
             xpos += 32
         #for i
     #imagem_lista
+#SpriteSheet

@@ -21,6 +21,7 @@ class Game:
         self.config = Config("Game")
         self.clock = pygame.time.Clock()
         self.imagem = pygame.image
+        pygame.key.set_repeat(50, 50)
 
         self.nivel = Nivel()
 
@@ -51,24 +52,48 @@ class Game:
         #self.nivel.nivel_1()
         self.chao = self.nivel.nivel_1()
 
+
         while True:
             self.clock.tick(self.config.tick)
             for self.event in pygame.event.get():
                 if self.event.type == QUIT:
                     exit()
-                #if
-                if self.event.type == pygame.KEYDOWN:
-                    if self.event.key == pygame.K_ESCAPE:
-                        self.menu_exibir()
-                    #if
-                    if self.event.key == pygame.K_RETURN:
-                        print "ok"
-                    #if
-                #if
+                #if quit
 
-                self.nivel.sprite_ambiente.update()
-                self.nivel.sprite_ambiente.draw(self.tela)
-                pygame.display.flip()
+                #teclas
+
+                self.key = pygame.key.get_pressed()
+                if self.key[K_LEFT]:
+                    if pygame.sprite.spritecollide(self.nivel.imp, self.nivel.sprite_ambiente, False):
+                        pass    #self.nivel.imp.mover_direita()
+                    else:
+                        self.nivel.imp.mover_esquerda()
+                #if esquerda
+                if self.key[K_RIGHT]:
+                    if pygame.sprite.spritecollide(self.nivel.imp, self.nivel.sprite_ambiente, False):
+                        pass    #self.nivel.imp.mover_esquerda()
+                    else:
+                        self.nivel.imp.mover_direita()
+                #if direita
+                if self.key[K_ESCAPE]:
+                    self.menu_exibir()
+                #if escape
+                if self.key[K_RETURN]:
+                    print "ok"
+                #if return
+                if self.key[K_z]:
+                    self.nivel.imp.mover_pular()
+                #if z
+
+            self.tela.fill(self.config.bgcolor)
+
+            self.nivel.sprite_ambiente.update()
+            self.nivel.sprite_ambiente.draw(self.tela)
+
+            self.nivel.sprite_inimigos.update()
+            self.nivel.sprite_inimigos.draw(self.tela)
+
+            pygame.display.flip()
                 #if
             #for
         #while
