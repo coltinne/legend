@@ -40,3 +40,10 @@ class Solo(Objetos):
         Objetos.__init__(self, "telaobjetos.png", (1, 0))
     #__init__
 #Solo
+
+
+class Teto(Objetos):
+    def __init__(self):
+        Objetos.__init__(self, "telaobjetos.png", (6, 6))
+    #__init__
+#Teto

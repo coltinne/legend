@@ -9,65 +9,118 @@ from objetos.personagem import *
 
 class Nivel():
     def __init__(self):
-        #pygame.sprite.Sprite.__init__(self)
-
         self.config = Config()
         self.sprite_ambiente = pygame.sprite.Group()
+        self.sprite_porta = pygame.sprite.Group()
         self.sprite_inimigos = pygame.sprite.Group()
 
-        self.imp = Imp()
+        self.fase = 0
+        self.level = []
 
-        self.nivel = pygame.Surface(self.config.tela)
-        self.nivel_marcador = 0
-
+        self.level_modelo()
+        self.nivel()
     #__init__
 
-    def nivel_1(self):
-        i = 0
+    def level_modelo(self):
+        if self.fase == 0:
+            self.level = [
+                "TTTTTTTTTTTTTTTTTTTTTTTTT",
+                "E-----------------------E",
+                "E--------------------P--E",
+                "E-------------------BBBBE",
+                "E-------------BBBBBBB---E",
+                "E-------BBBBBBB---------E",
+                "EBB---------------------E",
+                "E-BBBB------------------E",
+                "E-----BBBBB-------------E",
+                "E-----------------------E",
+                "E-------------BBBBBBBB--E",
+                "EBBBBBBBB---------------E",
+                "E-----------------------E",
+                "E-----------BBBBBB------E",
+                "EBBBBBB-----------------E",
+                "E-----------------------E",
+                "E------BBBBBB-----------E",
+                "E-----------------------E",
+                "ESSSSSSSSSSSSSSSSSSSSSSSE", ]
+        elif self.fase == 1:
+            self.level = [
+                "TTTTTTTTTTTTTTTTTTTTTTTTT",
+                "E-------P-----B---------E",
+                "E--B-BBBBBBB--B---------E",
+                "E-B--B-BB-----B---------E",
+                "E---------BBBBBBBBBBBB--E",
+                "E0BBBBBBB--B---BB----BB-E",
+                "E----------------B------E",
+                "E----------BB---BBB--BBBE",
+                "EBBBBBBBBBBB--B-B-BB----E",
+                "E-------------BB--BBBBB-E",
+                "E-B-BBBBBBBBBBBBBBB-----E",
+                "E-----------------B-B---E",
+                "EBBBBBBBBBB-B-BBBB---BBBE",
+                "E---------B---B-B-------E",
+                "EBBBBBBBB---BBBBBBBBBB-BE",
+                "E------------------B----E",
+                "E------BB-----B---------E",
+                "E-------------BBBBBBBBBBE",
+                "ESSSSSSSSSSSSSSSSSSSSSSSS", ]
+    #level
 
-        while i <= self.config.chao:
-            parede = Parede()
-            parede.rect.x = 0
-            parede.rect.y = i
-            self.sprite_ambiente.add(parede)
-            if i == 192 or i == 384:
-                x = 0
-                while x <= 352:
-                    parede = Parede()
-                    parede.rect.x = x
-                    parede.rect.y = i
-                    x += 32
-                    self.sprite_ambiente.add(parede)
-                #while linha baixa
-            #if
-            if i == 96 or i == 288 or i == 480:
-                x = 800
-                while x >= 352:
-                    parede = Parede()
-                    parede.rect.x = x
-                    parede.rect.y = i
-                    x -= 32
-                    self.sprite_ambiente.add(parede)
-                #while linha baixa
-            #if
-            i += 32
-        #while parede
-        i = 0
-        while i <= 800:
-            solo = Solo()
-            solo.rect.x = i
-            solo.rect.y = self.config.chao
-            i += 32
-            self.sprite_ambiente.add(solo)
-        #while solo
+    def next_nivel(self):
+        self.fase += 1
+        self.esvaziar_sprites()
+        self.level_modelo()
+        self.nivel()
+    #next nivel
 
-        porta = Porta()
-        porta.rect.x = 96
-        porta.rect.y = 537
-        self.sprite_ambiente.add(porta)
+    def prev_nivel(self):
+        self.fase -= 1
+        self.esvaziar_sprites()
+        self.level_modelo()
+        self.nivel()
+    #prev nivel
 
-        self.imp.rect.x = 225
-        self.imp.rect.y = 250
-        self.sprite_inimigos.add(self.imp)
-    #nivel_1
+    def nivel(self):
+        x = y = 0
+        for i in self.level:
+            for j in i:
+                if j == "T":
+                    t = Teto()
+                    t.rect.x = x
+                    t.rect.y = y
+                    self.sprite_ambiente.add(t)
+                if j == "E":
+                    e = Parede()
+                    e.rect.x = x
+                    e.rect.y = y
+                    self.sprite_ambiente.add(e)
+                if j == "P":
+                    p = Porta()
+                    p.rect.x = x
+                    p.rect.y = y
+                    self.sprite_porta.add(p)
+                if j == "B":
+                    b = Parede()
+                    b.rect.x = x
+                    b.rect.y = y
+                    self.sprite_ambiente.add(b)
+                if j == "S":
+                    s = Solo()
+                    s.rect.x = x
+                    s.rect.y = y
+                    self.sprite_ambiente.add(s)
+                #if spritagem
+                x += 32
+            #for j
+            y += 32
+            x = 0
+        #for i
+    #nivel
+
+    def esvaziar_sprites(self):
+        self.sprite_ambiente.empty()
+        self.sprite_porta.empty()
+        self.sprite_inimigos.empty()
+    #esvaziar_sprites
+
 #Nivel

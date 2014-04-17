@@ -18,7 +18,7 @@ class Home:
         #Iniciando o pygame
         pygame.init()
         pygame.font.init()
-        #pygame.mouse.set_visible(False)
+        pygame.mouse.set_visible(False)
 
         #Parametros do jogo
         self.config = Config("Home")

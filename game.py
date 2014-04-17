@@ -1,28 +1,32 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
+from numpy.core.umath import right_shift
 
 import pygame
 from pygame.locals import *
 from home import Home
 from config import Config
 from nivel import Nivel
+from objetos.personagem import Personagem
 
 
 class Game:
     def __init__(self):
+        global ambiente, inimigos, portal, go, nivel
+
+        #Controla a açao da porta
+        go = False
+
         if not pygame.init():
             pygame.init()
         if not pygame.font.init():
             pygame.font.init()
-        #if
+        #if iniciar pygame e fonts
 
         #configuraçoes
         self.config = Config("Game")
         self.clock = pygame.time.Clock()
         self.imagem = pygame.image
-        pygame.key.set_repeat(50, 50)
-
-        self.nivel = Nivel()
 
         #Menu
         self.menu = ["Menu Principal", "Configuracoes", "Salvar", "Sair"]
@@ -41,61 +45,82 @@ class Game:
         #calculando centro
         self.menu_largura()
 
-        #listar o menu
-        #self.menu_lista()
-
         #som de transicao do menu
         self.som_slide = pygame.mixer.Sound(self.config.som_path + "slide.ogg")
 
-        #Gerar sprites
-        #self.nivel.nivel_1()
-        self.chao = self.nivel.nivel_1()
+        #Controle de Niveis
+        nivel = Nivel()
+        ambiente = nivel.sprite_ambiente
+        inimigos = nivel.sprite_inimigos
+        portal = nivel.sprite_porta
 
+        #Controle dos menus
+        self.left = self.right = self.up = self.down = self.run = self.no_solo = False
+
+        #Player
+        self.player = Player()
+        self.player.rect.x = 500
+        self.player.rect.y = 540
+        self.g_player = pygame.sprite.Group()
+        self.g_player.add(self.player)
 
         while True:
+
             self.clock.tick(self.config.tick)
+
+            go = False
+
             for self.event in pygame.event.get():
                 if self.event.type == QUIT:
                     exit()
-                #if quit
+                if self.event.type == KEYDOWN:
+                    if self.event.key == pygame.K_ESCAPE:
+                        self.menu_exibir()
+                    if self.event.key == pygame.K_RETURN:
+                        print "ok"
+                #if KEY DOWN
+                #Controles
+                if self.event.type == KEYDOWN and self.event.key == K_LEFT:
+                    self.left = True
+                if self.event.type == KEYDOWN and self.event.key == K_RIGHT:
+                    self.right = True
+                if self.event.type == KEYDOWN and self.event.key == K_z:
+                    self.up = True
+                if self.event.type == KEYDOWN and self.event.key == K_DOWN:
+                    self.down = True
+                if self.event.type == KEYDOWN and self.event.key == K_x:
+                    self.run = True
+                if self.event.type == KEYDOWN and self.event.key == K_UP:
+                    go = True
 
-                #teclas
-
-                self.key = pygame.key.get_pressed()
-                if self.key[K_LEFT]:
-                    if pygame.sprite.spritecollide(self.nivel.imp, self.nivel.sprite_ambiente, False):
-                        pass    #self.nivel.imp.mover_direita()
-                    else:
-                        self.nivel.imp.mover_esquerda()
-                #if esquerda
-                if self.key[K_RIGHT]:
-                    if pygame.sprite.spritecollide(self.nivel.imp, self.nivel.sprite_ambiente, False):
-                        pass    #self.nivel.imp.mover_esquerda()
-                    else:
-                        self.nivel.imp.mover_direita()
-                #if direita
-                if self.key[K_ESCAPE]:
-                    self.menu_exibir()
-                #if escape
-                if self.key[K_RETURN]:
-                    print "ok"
-                #if return
-                if self.key[K_z]:
-                    self.nivel.imp.mover_pular()
-                #if z
+                if self.event.type == KEYUP and self.event.key == K_LEFT:
+                    self.left = False
+                if self.event.type == KEYUP and self.event.key == K_RIGHT:
+                    self.right = False
+                if self.event.type == KEYUP and self.event.key == K_z:
+                    self.up = False
+                if self.event.type == KEYUP and self.event.key == K_DOWN:
+                    self.down = False
+                if self.event.type == KEYUP and self.event.key == K_x:
+                    self.run = False
+                if self.event.type == KEYDOWN and self.event.key == K_UP:
+                    pass
+            #for pygame event
 
             self.tela.fill(self.config.bgcolor)
 
-            self.nivel.sprite_ambiente.update()
-            self.nivel.sprite_ambiente.draw(self.tela)
+            ambiente.update()
+            ambiente.draw(self.tela)
 
-            self.nivel.sprite_inimigos.update()
-            self.nivel.sprite_inimigos.draw(self.tela)
+            portal.update()
+            portal.draw(self.tela)
+
+            self.g_player.update(self.left, self.right, self.up, self.down, self.run)
+            self.g_player.draw(self.tela)
 
             pygame.display.flip()
-                #if
-            #for
-        #while
+
+        #while main loop
     #__init__
 
     def menu_largura(self):
@@ -118,7 +143,7 @@ class Game:
                 ypos = self.menu_font_size
             else:
                 ypos = self.menu_font_size * (self.menu_selecionado + 1)
-            #else
+            #if menu selecionado
             self.tela.blit(texto_surface, (400 - xpos, 200 - ypos + y2pos))
             cont += 1
         #for
@@ -130,12 +155,11 @@ class Game:
             for self.eventm in pygame.event.get():
                 if self.eventm.type == QUIT:
                     exit()
-                #if
                 if self.eventm.type == pygame.KEYDOWN:
                     if self.eventm.key == pygame.K_ESCAPE:
                         self.menu_selecionado = 0
                         var = False
-                    #if
+                    #if key esc
                     if self.eventm.key == pygame.K_DOWN:
                         if self.menu_selecionado == 0:
                             #self.menu_selecionado = len(self.menu) - 1
@@ -143,8 +167,7 @@ class Game:
                         else:
                             self.menu_selecionado -= 1
                             self.som_slide.play()
-                        #else
-                    #if
+                    #if key down
                     if self.eventm.key == pygame.K_UP:
                         if self.menu_selecionado == len(self.menu) - 1:
                             #self.menu_selecionado = 0
@@ -152,8 +175,7 @@ class Game:
                         else:
                             self.menu_selecionado += 1
                             self.som_slide.play()
-                        #else
-                    #if
+                    #if key up
                     if self.eventm.key == pygame.K_RETURN:
                         if self.menu_selecionado == 0:  #Tela inicial
                             Home()
@@ -165,14 +187,85 @@ class Game:
                             exit()
                         #elif
                     #if
-                #if
-            #for
+                #if key down
+            #for pygame get event
+
             self.tela.fill(self.config.bgcolor)
             self.menu_controle()
             pygame.display.flip()
-        #while
+        #while main loo
     #menu_exibir
 #Game
+
+
+class Player(Personagem):
+    def __init__(self):
+        Personagem.__init__(self, "imp.png")
+    #__init__
+
+    def update(self, left=False, right=False, up=False, down=False, run=False):
+        if left:
+            self.xvel = -7
+        if right:
+            self.xvel = 7
+        if up and self.no_solo:
+            self.yvel = -6
+        if down and not self.no_solo:
+            self.yvel = 6
+        if run:
+            if self.xvel > 0:
+                self.xvel = 9
+            else:
+                self.xvel = -9
+            if up and self.no_solo:
+                self.yvel = -9
+        #if movimentos
+
+        if not self.no_solo:
+            self.yvel += 0.3
+            if self.yvel > 100:
+                self.yvel = 100
+        #if gravidade
+
+        if not (left or right):
+            self.xvel = 0
+
+        if not up and self.no_solo:
+            self.yvel = 0
+
+        self.rect.x += self.xvel
+        colisao(self, self.xvel, 0)
+
+        self.rect.y += self.yvel
+        self.no_solo = False
+        colisao(self, 0, self.yvel)
+    #update
+#Plyer
+
+
+def colisao(objeto, xvel, yvel):
+    local = ambiente
+    for i in local:
+        if pygame.sprite.collide_rect(objeto, i):
+            if xvel > 0:
+                objeto.rect.right = i.rect.left
+            if xvel < 0:
+                objeto.rect.left = i.rect.right
+            if yvel > 0:
+                objeto.rect.bottom = i.rect.top
+                objeto.no_solo = True
+                objeto.yvel = 0
+            if yvel < 0:
+                objeto.rect.top = i.rect.bottom
+            #if movimentos
+        #if sprite collide
+    #for local
+    local = portal
+    for i in local:
+        if pygame.sprite.collide_rect(objeto, i):
+            if go:
+                nivel.next_nivel()
+#colisao
 
 if __name__ == "__main__":
     Game()

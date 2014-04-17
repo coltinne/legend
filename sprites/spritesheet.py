@@ -19,7 +19,7 @@ class SpriteSheet():
     def imagem_mapa(self, posicao):
         rect = pygame.Rect(posicao)
         imagem = pygame.Surface(rect.size)
-        imagem.fill([0, 0, 0])
+        imagem.fill(self.config.bgcolor)
         imagem.blit(self.sheet, (0, 0), rect)
         return imagem
     #image_map
