@@ -31,7 +31,15 @@ class Parede(Objetos):
 class Porta(Objetos):
     def __init__(self):
         Objetos.__init__(self, "telaobjetos.png", (4, 3))
+        self.aberto = False
     #__init__
+
+    def update(self, aberto):
+        self.aberto = aberto
+        if self.aberto:
+            self.image = self.sheet.imagem_sheet[5][3]
+        #if aberto
+    #update
 #Porta
 
 
@@ -47,3 +55,48 @@ class Teto(Objetos):
         Objetos.__init__(self, "telaobjetos.png", (6, 6))
     #__init__
 #Teto
+
+
+class Chave(Objetos):
+    def __init__(self):
+        Objetos.__init__(self, "telaobjetos.png", (4, 4))
+    #__init__
+#Chave
+
+
+class Fogo(Objetos):
+    def __init__(self):
+        Objetos.__init__(self, "telaobjetos.png", (4, 1))
+    #__init__
+#Fogo
+
+
+class Clunk(Objetos):
+    def __init__(self):
+        Objetos.__init__(self, "telaobjetos.png", (7, 2))
+        self.xvel = 6
+    #__innit__
+
+    def update(self):
+        self.rect.x += self.xvel
+    #update
+#Clunk
+
+
+class Plataforma(Objetos):
+    def __init__(self):
+        Objetos.__init__(self, "telaobjetos.png", (0, 6))
+        self.xvel = 2
+    #__init__
+
+    def update(self):
+        self.rect.x += self.xvel
+    #update
+#Plataforma
+
+
+class Agua(Objetos):
+    def __init__(self):
+        Objetos.__init__(self, "telaobjetos.png", (3, 1))
+    #__init__
+#Agua

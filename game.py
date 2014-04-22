@@ -9,14 +9,26 @@ from config import Config
 from nivel import Nivel
 from objetos.personagem import Personagem
 
+#Controla a açao da porta
+go = False
+abrir = False
+
+#Controle de Niveis
+nivel = Nivel()
+ambiente = nivel.sprite_ambiente
+inimigos = nivel.sprite_inimigos
+portal = nivel.sprite_porta
+chave = nivel.sprite_chave
+armadilha = nivel.sprite_armadilha
+respawn = nivel.respawn
+monstro = nivel.sprite_monstro
+plataforma = nivel.sprite_plataforma
+agua = nivel.sprite_agua
+
 
 class Game:
     def __init__(self):
-        global ambiente, inimigos, portal, go, nivel
-
-        #Controla a açao da porta
-        go = False
-
+        global go, abrir, nivel
         if not pygame.init():
             pygame.init()
         if not pygame.font.init():
@@ -48,17 +60,13 @@ class Game:
         #som de transicao do menu
         self.som_slide = pygame.mixer.Sound(self.config.som_path + "slide.ogg")
 
-        #Controle de Niveis
-        nivel = Nivel()
-        ambiente = nivel.sprite_ambiente
-        inimigos = nivel.sprite_inimigos
-        portal = nivel.sprite_porta
-
         #Controle dos menus
         self.left = self.right = self.up = self.down = self.run = self.no_solo = False
 
         #Player
         self.player = Player()
+        #self.player.rect.x = 500
+        #self.player.rect.y = 540
         self.player.rect.x = 500
         self.player.rect.y = 540
         self.g_player = pygame.sprite.Group()
@@ -112,16 +120,34 @@ class Game:
             ambiente.update()
             ambiente.draw(self.tela)
 
-            portal.update()
+            portal.update(abrir)
             portal.draw(self.tela)
+
+            armadilha.update()
+            armadilha.draw(self.tela)
+
+            colisao_movimento()
+            monstro.update()
+            monstro.draw(self.tela)
+            plataforma.update()
+            plataforma.draw(self.tela)
+
+            agua.draw(self.tela)
 
             self.g_player.update(self.left, self.right, self.up, self.down, self.run)
             self.g_player.draw(self.tela)
+
+            chave.update()
+            chave.draw(self.tela)
 
             pygame.display.flip()
 
         #while main loop
     #__init__
+
+    def loadscr(self):
+        self.tela.blit(self.imagem.load(self.config.img_path + "loadingscreen.png"), (0, 0))
+    #loadscr
 
     def menu_largura(self):
         for i in self.menu:
@@ -178,6 +204,7 @@ class Game:
                     #if key up
                     if self.eventm.key == pygame.K_RETURN:
                         if self.menu_selecionado == 0:  #Tela inicial
+                            nivel.zerar()
                             Home()
                         elif self.menu_selecionado == 1:    #Configuracoes
                             print "Config"
@@ -205,20 +232,20 @@ class Player(Personagem):
 
     def update(self, left=False, right=False, up=False, down=False, run=False):
         if left:
-            self.xvel = -7
+            self.xvel = -5
         if right:
-            self.xvel = 7
+            self.xvel = 5
         if up and self.no_solo:
             self.yvel = -6
         if down and not self.no_solo:
             self.yvel = 6
         if run:
             if self.xvel > 0:
-                self.xvel = 9
+                self.xvel = 7
             else:
-                self.xvel = -9
+                self.xvel = -7
             if up and self.no_solo:
-                self.yvel = -9
+                self.yvel = -8
         #if movimentos
 
         if not self.no_solo:
@@ -244,6 +271,7 @@ class Player(Personagem):
 
 
 def colisao(objeto, xvel, yvel):
+    global abrir, respawn
     local = ambiente
     for i in local:
         if pygame.sprite.collide_rect(objeto, i):
@@ -259,13 +287,90 @@ def colisao(objeto, xvel, yvel):
                 objeto.rect.top = i.rect.bottom
             #if movimentos
         #if sprite collide
-    #for local
+    #for sprite group
+    local = plataforma
+    for i in local:
+        if pygame.sprite.collide_rect(objeto, i):
+            if xvel > 0:
+                objeto.rect.right = i.rect.left
+            if xvel < 0:
+                objeto.rect.left = i.rect.right
+            if yvel > 0:
+                objeto.rect.bottom = i.rect.top
+                objeto.no_solo = True
+                objeto.yvel = 0
+            if yvel < 0:
+                objeto.rect.top = i.rect.bottom
+            #if movimentos
+        #if sprite collide
+    #for sprite group
     local = portal
     for i in local:
         if pygame.sprite.collide_rect(objeto, i):
-            if go:
+            if go and abrir:
                 nivel.next_nivel()
+                respawn = nivel.respawn
+                abrir = False
+            #if go and abert
+        #if pygame collide_sprite
+    #for sprite group
+    local = chave
+    for i in local:
+        if pygame.sprite.collide_rect(objeto, i):
+            if go:
+                abrir = True
+            #if go
+        #if pygame collide_sprite
+    #for sprite group
+    local = armadilha
+    for i in local:
+        if pygame.sprite.collide_rect(objeto, i):
+            objeto.rect.x = respawn[0]
+            objeto.rect.y = respawn[1]
+    local = monstro
+    for i in local:
+        if pygame.sprite.collide_rect(objeto, i):
+            objeto.rect.x = respawn[0]
+            objeto.rect.y = respawn[1]
+    local = agua
+    for i in local:
+        if pygame.sprite.collide_rect(objeto, i):
+            objeto.rect.y -= 10
 #colisao
+
+
+def colisao_movimento():
+    local = ambiente
+    objeto = monstro
+    for i in objeto:
+        if pygame.sprite.spritecollideany(i, local):
+            for j in local:
+                if pygame.sprite.collide_rect(i, j):
+                    if i.xvel > 0:
+                        i.xvel = -6
+                    else:
+                        i.xvel = 6
+                    #if direçao
+                #if sprite collide
+            #for local
+        #collide any
+    #for objeto
+    local = ambiente
+    objeto = plataforma
+    for i in objeto:
+        if pygame.sprite.spritecollideany(i, local):
+            for j in local:
+                if pygame.sprite.collide_rect(i, j):
+                    if i.xvel > 0:
+                        i.xvel = -2
+                    else:
+                        i.xvel = 2
+                    #if direçao
+                #if sprite collide
+            #for local
+        #collide any
+    #for objeto
+#colisao_monstro
 
 if __name__ == "__main__":
     Game()
