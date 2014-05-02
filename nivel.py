@@ -18,8 +18,9 @@ class Nivel():
         self.sprite_monstro = pygame.sprite.Group()
         self.sprite_plataforma = pygame.sprite.Group()
         self.sprite_agua = pygame.sprite.Group()
+        self.sprite_elevador = pygame.sprite.Group()
 
-        self.fase = 0
+        self.fase = 7
         self.level = []
         self.respawn = 0
 
@@ -161,45 +162,45 @@ class Nivel():
         elif self.fase == 6:
             self.level = [
                 "TTTTTTTTTTTTTTTTTTTTTTTTT",
+                "EP----------------------E",
+                "ES--------AAAA----------E",
+                "EK----------------------E",
+                "E---------SSSS-----F----E",
+                "E----------K------------E",
+                "EK-A-S-F---A--F---A-S--KE",
+                "E-KF---A--F----A--F--AK-E",
+                "ESAK-------AF-----A-FK-SE",
+                "E--FK-A--A-S-A---AF-K---E",
+                "E-A--K-F---A--F-A--KA-F-E",
+                "E---R-------------------E",
+                "ES-A-A-A-A-A-A-A-A-A-SSSE",
+                "ESS-A-A-A-ACA-A-A-A-A-SSE",
+                "ESSS-A-A-A-A-A-A-A-A-A-SE",
                 "E-----------------------E",
                 "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
+                "EAAAAAAAAAAAAAAAAAAAAAAAE",
                 "ESSSSSSSSSSSSSSSSSSSSSSSE", ]
 
         elif self.fase == 7:
             self.level = [
                 "TTTTTTTTTTTTTTTTTTTTTTTTT",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
+                "ER---------------------CE",
+                "ES-------A-------A-----SE",
+                "EFFFFF00F0K0F0FFF000FFFFE",
+                "EFFFFF0FF0F0FKFFFF0FFFFFE",
+                "EFFFFFK0F000F000FF0FFFFFE",
+                "E----------------------VE",
+                "EFFFFFFF0FFFFFFFFFFFFFFFE",
+                "EFFFFFFFKFFFFFFFFFFFFFFFE",
+                "EFFFFFFF0FFFFFFFFFFFFFFFE",
+                "EV----------------------E",
+                "EFFFF00FF0F00FF0F00KFFFFE",
+                "EFFFF0F0F0F0FKF0F00FFFFFE",
+                "EFFFFKFF00F0FF0FF000FFFFE",
+                "E---------K-------------E",
+                "E----------------------KE",
+                "EK----------------------E",
+                "E--------P--V-----------E",
                 "ESSSSSSSSSSSSSSSSSSSSSSSE", ]
 
         elif self.fase == 8:
@@ -317,6 +318,11 @@ class Nivel():
                     g.rect.x = x
                     g.rect.y = y
                     self.sprite_agua.add(g)
+                if j == "V":
+                    v = Elevador()
+                    v.rect.x = x
+                    v.rect.y = y
+                    self.sprite_elevador.add(v)
                 #if spritagem
                 x += 32
             #for j
@@ -334,6 +340,7 @@ class Nivel():
         self.sprite_monstro.empty()
         self.sprite_plataforma.empty()
         self.sprite_agua.empty()
+        self.sprite_elevador.empty()
     #esvaziar_sprites
 
     def zerar(self):

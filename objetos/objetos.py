@@ -100,3 +100,15 @@ class Agua(Objetos):
         Objetos.__init__(self, "telaobjetos.png", (3, 1))
     #__init__
 #Agua
+
+
+class Elevador(Objetos):
+    def __init__(self):
+        Objetos.__init__(self, "telaobjetos.png", (3, 2))
+        self.xvel = 6
+    #__innit__
+
+    def update(self):
+        self.rect.x += self.xvel
+    #update
+#Elevador

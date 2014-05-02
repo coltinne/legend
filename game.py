@@ -24,6 +24,7 @@ respawn = nivel.respawn
 monstro = nivel.sprite_monstro
 plataforma = nivel.sprite_plataforma
 agua = nivel.sprite_agua
+elevador = nivel.sprite_elevador
 
 
 class Game:
@@ -125,6 +126,9 @@ class Game:
 
             armadilha.update()
             armadilha.draw(self.tela)
+
+            elevador.update()
+            elevador.draw(self.tela)
 
             colisao_movimento()
             monstro.update()
@@ -319,9 +323,6 @@ def colisao(objeto, xvel, yvel):
         if pygame.sprite.collide_rect(objeto, i):
             if go:
                 abrir = True
-            #if go
-        #if pygame collide_sprite
-    #for sprite group
     local = armadilha
     for i in local:
         if pygame.sprite.collide_rect(objeto, i):
@@ -336,6 +337,11 @@ def colisao(objeto, xvel, yvel):
     for i in local:
         if pygame.sprite.collide_rect(objeto, i):
             objeto.rect.y -= 10
+    local = elevador
+    for i in local:
+        if pygame.sprite.collide_rect(objeto, i):
+            objeto.rect.x = i.rect.x
+            objeto.rect.y = i.rect.y
 #colisao
 
 
@@ -350,11 +356,6 @@ def colisao_movimento():
                         i.xvel = -6
                     else:
                         i.xvel = 6
-                    #if direçao
-                #if sprite collide
-            #for local
-        #collide any
-    #for objeto
     local = ambiente
     objeto = plataforma
     for i in objeto:
@@ -365,11 +366,16 @@ def colisao_movimento():
                         i.xvel = -2
                     else:
                         i.xvel = 2
-                    #if direçao
-                #if sprite collide
-            #for local
-        #collide any
-    #for objeto
+    local = ambiente
+    objeto = elevador
+    for i in objeto:
+        if pygame.sprite.spritecollideany(i, local):
+            for j in local:
+                if pygame.sprite.collide_rect(i, j):
+                    if i.xvel > 0:
+                        i.xvel = -6
+                    else:
+                        i.xvel = 6
 #colisao_monstro
 
 if __name__ == "__main__":
