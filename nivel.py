@@ -5,11 +5,22 @@ import pygame
 from config import Config
 from objetos.objetos import *
 from objetos.personagem import *
+import random
 
 
 class Nivel():
     def __init__(self):
+        pygame.mixer.init()
         self.config = Config()
+        self.musicas = self.config.musicas
+        self.musica_path = self.config.musica_path
+        self.musicas = self.config.musicas
+        self.sons = self.config.sons
+        self.mixer_music = pygame.mixer.music
+        self.mixer_sound = pygame.mixer.Sound
+
+        self.som_proxima_fase = self.mixer_sound(self.config.som_path + self.sons[0])
+
         self.sprite_ambiente = pygame.sprite.Group()    #T(teto) E,B(parede) S(solo)
         self.sprite_porta = pygame.sprite.Group()   #P(porta)
         self.sprite_chave = pygame.sprite.Group()   #C(chave)
@@ -21,7 +32,7 @@ class Nivel():
         self.sprite_elevador = pygame.sprite.Group()    #V(elevador)
         self.sprite_nuvem = pygame.sprite.Group()    #N(nuvem)
 
-        self.fase = 8
+        self.fase = 0
         self.level = []
         self.respawn = 0
 
@@ -49,7 +60,7 @@ class Nivel():
                 "EBBBBBB-----------------E",
                 "E-----------------------E",
                 "E------BBBBBB-----------E",
-                "E-----------------------E",
+                "E-------------R---------E",
                 "ESSSSSSSSSSSSSSSSSSSSSSSE", ]
         elif self.fase == 1:
             self.level = [
@@ -250,10 +261,12 @@ class Nivel():
     #level
 
     def next_nivel(self):
+        self.som_proxima_fase.play()
         self.fase += 1
         self.esvaziar_sprites()
         self.level_modelo()
         self.nivel()
+        self.musica()
     #next nivel
 
     def prev_nivel(self):
@@ -356,4 +369,10 @@ class Nivel():
         self.level_modelo()
         self.nivel()
 
+    def musica(self):
+        x = self.musicas.__len__()
+        x = random.randint(0, x - 1)
+        self.mixer_music.load(self.musica_path + self.musicas[x])
+        self.mixer_music.play(-1)
+    #musica
 #Nivel

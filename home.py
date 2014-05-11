@@ -22,19 +22,23 @@ class Home:
 
         #Parametros do jogo
         self.config = Config("Home")
-        self.musica = pygame.mixer.music
+        self.mixer_music = pygame.mixer.music
+        self.mixer_sound = pygame.mixer.Sound
         self.imagem = pygame.image
         self.clock = pygame.time.Clock()  #Criando o "relogio"
+        self.musicas = self.config.musicas
+        self.sons = self.config.sons
 
         #Menu
         self.menu = ["    Opcao    ", "    Iniciar    ", "    Sair    "]  #Valores do menu
-        self.menu_som = self.config.som_path + "menu.ogg"
+        self.menu_som = self.config.musica_path + self.musicas[8]
         self.menu_backgroud = self.imagem.load(self.config.img_path + "bkmenu.png")
         self.menu_listac = ""  #Contrem o menu em si Controle
         self.menu_selecionado = 1  #A opcao selecionada
         self.menu_font = pygame.font.SysFont("verdana", 60)  #Fonte do menu
         self.menu_font_cor = [0, 0, 0]  #Cor da fonto do menu
         self.menu_centro = []  #Menu no centro
+        self.som_slide = self.mixer_sound(self.config.som_path + self.sons[2])
 
         #Criando a tela
         self.tela = pygame.display.set_mode(self.config.tela, 0, 32)
@@ -47,11 +51,8 @@ class Home:
         self.menu_lista()
 
         #som de fundo do menu
-        self.musica.load(self.menu_som)
-        self.musica.play(-1)
-
-        #som de transicao de slide
-        self.som_slide = pygame.mixer.Sound(self.config.som_path + "slide.ogg")
+        self.mixer_music.load(self.menu_som)
+        self.mixer_music.play(-1)
 
         #Main loop
         while True:
@@ -86,7 +87,7 @@ class Home:
                         if self.menu_selecionado == 0:  #Opcoes
                             print "Config"
                         elif self.menu_selecionado == 1:    #iniciar
-                            self.musica.stop()
+                            self.mixer_music.stop()
                             Game()
                         elif self.menu_selecionado == 2:    #Sair
                             exit()

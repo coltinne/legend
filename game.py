@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 #-*- coding: utf-8 -*-
-from numpy.core.umath import right_shift
 
 import pygame
 from pygame.locals import *
@@ -41,6 +40,10 @@ class Game:
         self.config = Config("Game")
         self.clock = pygame.time.Clock()
         self.imagem = pygame.image
+        self.musicas = self.config.musicas
+        self.sons = self.config.sons
+        self.mixer_music = pygame.mixer.music
+        self.mixer_sound = pygame.mixer.Sound
 
         #Menu
         self.menu = ["Reiniciar Fase", "Menu Principal", "Configuracoes", "Salvar", "Sair"]
@@ -59,8 +62,9 @@ class Game:
         #calculando centro
         self.menu_largura()
 
-        #som de transicao do menu
-        self.som_slide = pygame.mixer.Sound(self.config.som_path + "slide.ogg")
+        #sons do jogo
+        self.som_slide = self.mixer_sound(self.config.som_path + self.sons[2])
+        self.som_pulo = self.mixer_sound(self.config.som_path + self.sons[1])
 
         #Controle dos menus
         self.left = self.right = self.up = self.down = self.run = self.no_solo = False
@@ -71,6 +75,9 @@ class Game:
         self.player.rect.y = 540
         self.g_player = pygame.sprite.Group()
         self.g_player.add(self.player)
+
+        #tocar musicas das fases
+        nivel.musica()
 
         while True:
 
@@ -93,6 +100,7 @@ class Game:
                     self.right = True
                 if self.event.type == KEYDOWN and self.event.key == K_z:
                     self.up = True
+                    self.som_pulo.play()
                 if self.event.type == KEYDOWN and self.event.key == K_DOWN:
                     self.down = True
                 if self.event.type == KEYDOWN and self.event.key == K_x:
