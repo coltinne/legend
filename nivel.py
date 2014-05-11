@@ -10,17 +10,18 @@ from objetos.personagem import *
 class Nivel():
     def __init__(self):
         self.config = Config()
-        self.sprite_ambiente = pygame.sprite.Group()
-        self.sprite_porta = pygame.sprite.Group()
-        self.sprite_chave = pygame.sprite.Group()
-        self.sprite_inimigos = pygame.sprite.Group()
-        self.sprite_armadilha = pygame.sprite.Group()
-        self.sprite_monstro = pygame.sprite.Group()
-        self.sprite_plataforma = pygame.sprite.Group()
-        self.sprite_agua = pygame.sprite.Group()
-        self.sprite_elevador = pygame.sprite.Group()
+        self.sprite_ambiente = pygame.sprite.Group()    #T(teto) E,B(parede) S(solo)
+        self.sprite_porta = pygame.sprite.Group()   #P(porta)
+        self.sprite_chave = pygame.sprite.Group()   #C(chave)
+        self.sprite_inimigos = pygame.sprite.Group()    #Nao usado
+        self.sprite_armadilha = pygame.sprite.Group()   #F(fogo)
+        self.sprite_monstro = pygame.sprite.Group()    #K(Clunk)
+        self.sprite_plataforma = pygame.sprite.Group()    #A(plataforma)
+        self.sprite_agua = pygame.sprite.Group()    #G(agua)
+        self.sprite_elevador = pygame.sprite.Group()    #V(elevador)
+        self.sprite_nuvem = pygame.sprite.Group()    #N(nuvem)
 
-        self.fase = 7
+        self.fase = 8
         self.level = []
         self.respawn = 0
 
@@ -189,40 +190,40 @@ class Nivel():
                 "EFFFFF00F0K0F0FFF000FFFFE",
                 "EFFFFF0FF0F0FKFFFF0FFFFFE",
                 "EFFFFFK0F000F000FF0FFFFFE",
+                "E-----------------------E",
                 "E----------------------VE",
-                "EFFFFFFF0FFFFFFFFFFFFFFFE",
+                "E-----------------------E",
                 "EFFFFFFFKFFFFFFFFFFFFFFFE",
-                "EFFFFFFF0FFFFFFFFFFFFFFFE",
+                "EFFFFFFFKFFFFFFFFFFFFFFFE",
+                "EFFFFFFFKFFFFFFFFFFFFFFFE",
+                "E-----------------------E",
                 "EV----------------------E",
+                "E-------E---------------E",
                 "EFFFF00FF0F00FF0F00KFFFFE",
                 "EFFFF0F0F0F0FKF0F00FFFFFE",
-                "EFFFFKFF00F0FF0FF000FFFFE",
-                "E---------K-------------E",
-                "E----------------------KE",
-                "EK----------------------E",
-                "E--------P--V-----------E",
+                "EFFFFKFF00F0FF00F0P0FFFFE",
                 "ESSSSSSSSSSSSSSSSSSSSSSSE", ]
 
         elif self.fase == 8:
             self.level = [
                 "TTTTTTTTTTTTTTTTTTTTTTTTT",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
+                "E-----K-----------K----PE",
+                "E------------------A----E",
+                "E---A-------------------E",
+                "E---------------A-------E",
+                "E----------C------------E",
+                "E-F-FAF-F-F-FAF-F-FAF-FGE",
+                "E----K-----------------GE",
+                "E----------K-----------GE",
+                "E----------------------GE",
+                "E-FBFBFBFBFBFBFBFBFBFBFBE",
+                "EG---------------K------E",
+                "EG-----K----------------E",
+                "EG-----S----N-----------E",
+                "EGK----FFFFFF--FF-F-F-F-E",
+                "EG-----F-------F-------KE",
+                "EG-----F-K-----F--------E",
+                "E--------------F--R-----E",
                 "ESSSSSSSSSSSSSSSSSSSSSSSE", ]
 
         elif self.fase == 9:
@@ -240,10 +241,10 @@ class Nivel():
                 "E-----------------------E",
                 "E-----------------------E",
                 "E-----------------------E",
+                "E---------------------V-E",
                 "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
-                "E-----------------------E",
+                "E----------N-----------BE",
+                "E---------------------BBE",
                 "E-----------------------E",
                 "ESSSSSSSSSSSSSSSSSSSSSSSE", ]
     #level
@@ -323,6 +324,11 @@ class Nivel():
                     v.rect.x = x
                     v.rect.y = y
                     self.sprite_elevador.add(v)
+                if j == "N":
+                    n = Nuvem()
+                    n.rect.x = x
+                    n.rect.y = y
+                    self.sprite_nuvem.add(n)
                 #if spritagem
                 x += 32
             #for j
@@ -341,6 +347,7 @@ class Nivel():
         self.sprite_plataforma.empty()
         self.sprite_agua.empty()
         self.sprite_elevador.empty()
+        self.sprite_nuvem.empty()
     #esvaziar_sprites
 
     def zerar(self):
